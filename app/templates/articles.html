@@ -5,7 +5,36 @@
     <h1 class="display-4">Articles Page</h1>
     <p class="lead">This Web is built using python flask and bootstrap.</p>
     <hr class="my-4">
-    <p>It uses utility classes for typography and spacing to space content out within the larger container.</p>
+    <table class="table">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Title</th>
+            <th scope="col">Description</th>
+            <th scope="col">Author</th>
+            <th scope="col">Date</th>
+            <th scope="col">Etc</th>
+
+          </tr>
+        </thead>
+        <tbody>
+          
+            {% for i in arti %}
+          <tr>  
+            <th scope="row">{{ i['id'] }}</th>
+            <td>{{ i['title'] }}</td>
+            <td>{{ i['body'] }}</td>
+            <td>{{ i['author'] }}</td>
+            <td>{{ i['create_date'] }}</td>
+            <td><button type="button" class="btn btn-warning">Edit</button></td>
+          </tr>  
+            {% endfor %}
+          
+          
+        
+        </tbody>
+      </table>
+      
     <a class="btn btn-warning btn-lg" href="#" role="button">Learn more</a>
   </div>
 
