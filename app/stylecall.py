@@ -15,6 +15,15 @@ def articles():
     articles = Articles()
     print(len(articles))
     return render_template('articles.html', arti=articles)
+
+@app.route("/articles/<int:id>", methods=['GET','POST']) #맨 뒤에 아무것도 없다면 GET방식
+def articlesinfo(id):
+    print(id)
+    articles = Articles()
+    data = articles[id-1]
+    return render_template('articlesinfo.html', id=data)
+
+
 @app.route("/gallery", methods=['GET','POST'])	
 def gallery():
 	return render_template('png.html')

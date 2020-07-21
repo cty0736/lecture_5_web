@@ -5,6 +5,7 @@
     <h1 class="display-4">Articles Page</h1>
     <p class="lead">This Web is built using python flask and bootstrap.</p>
     <hr class="my-4">
+    <!-- 테이블시작 -->
     <table class="table">
         <thead class="thead-dark">
           <tr>
@@ -16,18 +17,19 @@
             <th scope="col">Etc</th>
 
           </tr>
+        <!-- T 헤드 맨위 인덱스, T 바디 자료내용, T 풋 맨 아래 인덱스-->
         </thead>
         <tbody>
           
             {% for i in arti %}
-          <tr>  
-            <th scope="row">{{ i['id'] }}</th>
-            <td>{{ i['title'] }}</td>
-            <td>{{ i['body'] }}</td>
-            <td>{{ i['author'] }}</td>
-            <td>{{ i['create_date'] }}</td>
-            <td><button type="button" class="btn btn-warning">Edit</button></td>
-          </tr>  
+              <tr>  
+                <th scope="row">{{ i['id'] }}</th>
+                <td><a href="/articles/{{ i['id'] }}">{{ i['title'] }}</a></td>
+                <td>{{ i['body'] }}</td>
+                <td>{{ i['author'] }}</td>
+                <td>{{ i['create_date'] }}</td>
+                <td><button type="button" class="btn btn-warning">Edit</button></td>
+              </tr>  
             {% endfor %}
           
           
