@@ -1,6 +1,32 @@
-from flask import Flask, render_template
+from flask import Flask, render_template ,flash, redirect, url_for, session, request, logging
+from flask_mysqldb import MySQL
 from data import Articles
 app = Flask(__name__)
+
+#config mysql
+app.config['MYSQL_HOST'] = 'localhost'
+app.config['MYSQL_USER'] = 'root'
+app.config['MYSQL_PASSWORD'] = '1234'
+app.config['MYSQL_DB'] = 'myflaskweb'
+app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
+
+#initate mysql
+mysql = MySQL(app)
+
+@app.route('/mysql')
+def users():
+    cur = mysql.connection.cursor()
+    sql = '''insert into users (name, email, username, password) values ('Hong','5@naver.com','gangnam5','1234');'''
+    cur.execute(sql)
+    mysql.connection.commit() #commit
+    
+    sql = '''desc users'''
+    cur.execute(sql)
+    
+    rv = cur.fetchall()
+    cur.close() #connection close
+    
+    return str(rv)
 
 @app.route("/", methods=['GET','POST'])
 def home():
