@@ -30,13 +30,13 @@ cursor=db.cursor()
 
 @app.route("/", methods=['GET','POST'])
 def home():
-	#return "Hello World!"
-	#return "<html><body><h1>Hello World</h1></body></html>"
-	return render_template('home.html')
+    #return "Hello World!"
+    #return "<html><body><h1>Hello World</h1></body></html>"
+    return render_template('home.html')
 
 @app.route("/about", methods=['GET','POST']) #맨 뒤에 아무것도 없다면 GET방식
 def about():
-	return render_template('about.html')
+    return render_template('about.html')
     
 @app.route("/articles", methods=['GET','POST']) #맨 뒤에 아무것도 없다면 GET방식
 def articles():
@@ -52,11 +52,11 @@ def articlesinfo(id):
     return render_template('articlesinfo.html', id=data)
 
 
-@app.route("/gallery", methods=['GET','POST'])	
+@app.route("/gallery", methods=['GET','POST'])    
 def gallery():
-	return render_template('png.html')
-	
-@app.route("/register", methods=['GET','POST'])	
+    return render_template('png.html')
+    
+@app.route("/register", methods=['GET','POST'])    
 def register():
     if request.method == 'POST':
         name = request.form.get('name')
@@ -86,56 +86,72 @@ def register():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-	"""Login Form"""
-	if request.method == 'GET':
-		return render_template('login.html', name,email,username,password)
-	else:
-		name = request.form['username']
-		passw = request.form['password']
-		try:
-			data = User.query.filter_by(username=name, password=passw).first()
-			if data is not None:
-				session['logged_in'] = True
-				return redirect(url_for('home'))
-			else:
-				return 'Dont Login'
-		except:
-			return "Dont Login"
+    """Login Form"""
+    if request.method == 'GET':
+        return render_template('login.html')
+    else:
+        ID = request.form.get('email')
+        PW = request.form.get('password')
+        sql_verify= 'SELECT password FROM users WHERE email = %s;'
+        cursor.execute(sql_verify, [ID])
+        userID = cursor.fetchone()
+
+        if userID is None:
+            print('New Guest')
+            return redirect(url_for('login'))
+
+
+        if pbkdf2_sha256.verify(PW,userID[4]):
+            print('Success')
+            return redirect(url_for('articles'))
+
+        else :
+            print('incorrect!')
+            return redirect(url_for('login'))
+        try:
+            data = User.query.filter_by(username=name, password=passw).first()
+            if data is not None:
+                session['logged_in'] = True
+                return redirect(url_for('home'))
+            else:
+                return 'Dont Login'
+        except:
+            return "Dont Login"
 
 '''
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-	"""Login Form"""
-	if request.method == 'GET':
-		return render_template('login.html',, name,email,username,password)
-	else:
-		name = request.form['username']
-		passw = request.form['password']
-		try:
-			data = User.query.filter_by(username=name, password=passw).first()
-			if data is not None:
-				session['logged_in'] = True
-				return redirect(url_for('home'))
-			else:
-				return 'Dont Login'
-		except:
-			return "Dont Login"
+    """Login Form"""
+    if request.method == 'GET':
+        return render_template('login.html',, name,email,username,password)
+    else:
+        name = request.form['username']
+        passw = request.form['password']
+        try:
+            data = User.query.filter_by(username=name, password=passw).first()
+            if data is not None:
+                session['logged_in'] = True
+                return redirect(url_for('home'))
+            else:
+                return 'Dont Login'
+        except:
+            return "Dont Login"
 
 @app.route('/register/', methods=['GET', 'POST'])
 def register():
-	"""Register Form"""
-	if request.method == 'POST':
-		new_user = User(username=request.form['username'], password=request.form['password'])
-		db.session.add(new_user)
-		db.session.commit()
-		return render_template('login.html')
-	return render_template('register.html')
+    """Register Form"""
+    if request.method == 'POST':
+        new_user = User(username=request.form['username'], password=request.form['password'])
+        db.session.add(new_user)
+        db.session.commit()
+        return render_template('login.html')
+    return render_template('register.html')
 
 @app.route("/logout")
 def logout():
-	"""Logout Form"""
-	session['logged_in'] = False
-	return redirect(url_for('home'))
+    """Logout Form"""
+    session['logged_in'] = False
+    return redirect(url_for('home'))
 '''
 if __name__ == "__main__":
     app.run(debug= True) #개발 끝나고 서비스 할 때는 디버그 오프 내 prompt에서 보는 함수 따로 작성해라
