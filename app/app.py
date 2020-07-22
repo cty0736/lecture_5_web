@@ -1,6 +1,10 @@
 from flask import Flask, render_template ,flash, redirect, url_for, session, request, logging
 import pymysql
+from passlib.hash import pbkdf2_sha256
+
 from data import Articles
+
+
 app = Flask(__name__)
 
 db = pymysql.connect(host='localhost',port=3306,user='root'
@@ -58,10 +62,11 @@ def register():
         name = request.form.get('name')
         email = request.form.get('email')
         username = request.form.get('username')
-        password = request.form.get('password')
+        password = pbkdf2_sha256.hash(request.form.get('password'))
         re_password = request.form.get('re_password')
 
-        if password == re_password:
+        if pbkdf2_sha256.verify(re_password, password):
+
             sql_regist= '''
             INSERT INTO users (name, email, username, password) 
             VALUES (%s ,%s, %s, %s);
@@ -73,10 +78,30 @@ def register():
             print([name,email,username,password],':registed')
         else:
             print('Check re-password')
+        return print('POST send')    
 #get 방식 그냥 엔터치기
     else: 
-        render_template('register2.html')
-    return render_template('register2.html')
+        return render_template('register2.html')
+    
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+	"""Login Form"""
+	if request.method == 'GET':
+		return render_template('login.html', name,email,username,password)
+	else:
+		name = request.form['username']
+		passw = request.form['password']
+		try:
+			data = User.query.filter_by(username=name, password=passw).first()
+			if data is not None:
+				session['logged_in'] = True
+				return redirect(url_for('home'))
+			else:
+				return 'Dont Login'
+		except:
+			return "Dont Login"
+
 '''
 @app.route('/login', methods=['GET', 'POST'])
 def login():
