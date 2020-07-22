@@ -8,20 +8,21 @@ db = pymysql.connect(host='localhost',port=3306,user='root'
 #
 cursor=db.cursor()
 #
-@app.route('/mysql')
-def users():
+
+# @app.route('/mysql')
+# def users():
     
-    sql = '''insert into users (name, email, username, password) values ('Hong','5@naver.com','gangnam5','1234');'''
-    cursor.execute(sql)
-    db.commit() #commit
+#     sql = '''insert into users (name, email, username, password) values ('Hong','5@naver.com','gangnam5','1234');'''
+#     cursor.execute(sql)
+#     db.commit() #commit
     
-    sql = '''desc users'''
-    cur.execute(sql)
+#     sql = '''desc users'''
+#     cur.execute(sql)
     
-    rv = cur.fetchall()
-    db.close() #connection close
+#     rv = cur.fetchall()
+#     db.close() #connection close
     
-    return str(rv)
+#     return str(rv)
 
 @app.route("/", methods=['GET','POST'])
 def home():
@@ -59,6 +60,7 @@ def register():
         username = request.form.get('username')
         password = request.form.get('password')
         re_password = request.form.get('re_password')
+
         if password == re_password:
             sql_regist= '''
             INSERT INTO users (name, email, username, password) 
@@ -71,9 +73,10 @@ def register():
             print([name,email,username,password],':registed')
         else:
             print('Check re-password')
-
-    return render_template('register.html')
-
+#get 방식 그냥 엔터치기
+    else: 
+        render_template('register2.html')
+    return render_template('register2.html')
 '''
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -112,3 +115,5 @@ def logout():
 if __name__ == "__main__":
     app.run(debug= True) #개발 끝나고 서비스 할 때는 디버그 오프 내 prompt에서 보는 함수 따로 작성해라
     # app.run(host='0.0.0.0',port='8000',debug=True) #flask 5000대 nodejs 8000대
+
+db.close() #connection close    
